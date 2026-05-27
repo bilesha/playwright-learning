@@ -1,0 +1,23 @@
+{
+  "name": "playwright",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/experimental-ct-react": "^1.60.0",
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.14.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.11.3",
+    "dotenv": "^17.4.2",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}

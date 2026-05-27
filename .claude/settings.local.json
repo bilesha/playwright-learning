@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(cmd /c \"dir /s /b \"\"F:\\\\Code\\\\C#\\\\myproject\"\"\")",
+      "PowerShell(cmd /c \"dir \"\"F:\\\\Code\\\\C#\\\\myproject\"\"\")",
+      "PowerShell(cmd /c \"dir /s /b \"\"F:\\\\Code\\\\Playwright\\\\claude-logs\"\"\")",
+      "Bash(npx playwright *)",
+      "Bash(git -C \"F:/Code/Playwright\" log --oneline -102)",
+      "Bash(python3 *)"
+    ]
+  }
+}
