@@ -16,9 +16,9 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: npx playwright install --with-deps chromium
     - name: Run Playwright tests
-      run: npx playwright test
+      run: npx playwright test --project=chromium
       env:
         SAUCE_URL: ${{ secrets.SAUCE_URL }}
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
