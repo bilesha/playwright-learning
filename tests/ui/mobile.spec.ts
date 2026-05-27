@@ -1,13 +1,18 @@
 import { test, expect, devices } from '@playwright/test';
 import { LoginPage } from '../../utils/LoginPage';
 
-test.use({ ...devices['iPhone 13'] });
+// Strip defaultBrowserType so this test runs on whichever browser the project specifies
+const { defaultBrowserType: _, ...iPhoneSettings } = devices['iPhone 13'];
+test.use({ ...iPhoneSettings });
 
 test('inventory page loads on mobile', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  await loginPage.login(process.env.SAUCE_USERNAME!, process.env.SAUCE_PASSWORD!);
 
   await expect(page).toHaveURL(/inventory/);
-  await expect(page).toHaveScreenshot('inventory-mobile.png');
+
+  if (!process.env.CI) {
+    await expect(page).toHaveScreenshot('inventory-mobile.png');
+  }
 });

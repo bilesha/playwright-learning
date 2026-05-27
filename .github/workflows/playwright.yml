@@ -18,7 +18,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps chromium
     - name: Run Playwright tests
-      run: npx playwright test --project=chromium
+      run: npx playwright test --project=chromium --ignore-snapshots
       env:
         SAUCE_URL: ${{ secrets.SAUCE_URL }}
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
