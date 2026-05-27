@@ -9,3 +9,7 @@ node_modules/
 # Secrets — never commit these
 .env
 auth.json
+
+# Claude export logs
+*.txt
+log-screenshots/

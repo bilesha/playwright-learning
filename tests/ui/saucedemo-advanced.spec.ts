@@ -4,8 +4,6 @@ import { InventoryPage } from '../../utils/InventoryPage';
 import { CartPage } from '../../utils/CartPage';
 import { CheckoutPage } from '../../utils/CheckoutPage';
 
-const PASSWORD = process.env.SAUCE_PASSWORD!;
-
 const loginCases = [
   { username: 'standard_user',   expectInventory: true  },
   { username: 'problem_user',    expectInventory: true  },
@@ -118,7 +116,7 @@ test.describe('login behaviour across user types', () => {
     test(username, async ({ page }) => {
       const loginPage = new LoginPage(page);
       await loginPage.goto();
-      await loginPage.login(username, PASSWORD);
+      await loginPage.login(username, process.env.SAUCE_PASSWORD!);
 
       if (expectInventory) {
         await expect(page).toHaveURL(/inventory/);
