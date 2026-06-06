@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { LoginPage } from '../../utils/LoginPage';
-import { InventoryPage } from '../../utils/InventoryPage';
+import { LoginPage } from './utils/LoginPage';
+import { InventoryPage } from './utils/InventoryPage';
 
 test.describe('expect.poll and expect.toPass', () => {
   test.beforeEach(async ({ page }) => {

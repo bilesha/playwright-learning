@@ -1,5 +1,5 @@
 import { test, expect, devices } from '@playwright/test';
-import { LoginPage } from '../../utils/LoginPage';
+import { LoginPage } from './utils/LoginPage';
 
 // Strip defaultBrowserType so this test runs on whichever browser the project specifies
 const { defaultBrowserType: _, ...iPhoneSettings } = devices['iPhone 13'];

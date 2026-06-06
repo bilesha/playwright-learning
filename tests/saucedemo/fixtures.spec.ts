@@ -1,4 +1,4 @@
-import { test, expect } from '../../utils/fixtures';
+import { test, expect } from './utils/fixtures';
 
 test('inventory page loads after login', async ({ loggedInPage }) => {
   await expect(loggedInPage).toHaveURL(/inventory/);

@@ -8,7 +8,9 @@ node_modules/
 
 # Secrets — never commit these
 .env
-auth.json
+tests/jsonplaceholder/.auth/user.json
+tests/saucedemo/.auth/user.json
+tests/ai-plantz/.auth/user.json
 
 # Claude export logs
 *.txt

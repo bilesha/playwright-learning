@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { LoginPage } from '../../utils/LoginPage';
-import { InventoryPage } from '../../utils/InventoryPage';
-import { CartPage } from '../../utils/CartPage';
-import { CheckoutPage } from '../../utils/CheckoutPage';
+import { LoginPage } from './utils/LoginPage';
+import { InventoryPage } from './utils/InventoryPage';
+import { CartPage } from './utils/CartPage';
+import { CheckoutPage } from './utils/CheckoutPage';
 
 const loginCases = [
   { username: 'standard_user',   expectInventory: true  },

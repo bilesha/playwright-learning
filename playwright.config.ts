@@ -25,9 +25,6 @@ export default defineConfig({
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-     baseURL: 'https://jsonplaceholder.typicode.com',
-
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     headless: !!process.env.CI,
@@ -35,47 +32,21 @@ export default defineConfig({
    
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: 'setup',
-      testMatch: '**/auth.setup.ts',
-    },
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'], storageState: 'auth.json' },
-      dependencies: ['setup'],
-    },
+    // jsonplaceholder
+    { name: 'jsonplaceholder-setup', testMatch: '**/jsonplaceholder/auth.setup.ts' },
+    { name: 'jsonplaceholder-chromium', testDir: './tests/jsonplaceholder', use: { ...devices['Desktop Chrome'], baseURL: 'https://jsonplaceholder.typicode.com', storageState: 'tests/jsonplaceholder/.auth/user.json' }, dependencies: ['jsonplaceholder-setup'] },
+    { name: 'jsonplaceholder-firefox', testDir: './tests/jsonplaceholder', use: { ...devices['Desktop Firefox'], baseURL: 'https://jsonplaceholder.typicode.com' } },
+    { name: 'jsonplaceholder-webkit', testDir: './tests/jsonplaceholder', use: { ...devices['Desktop Safari'], baseURL: 'https://jsonplaceholder.typicode.com' } },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // saucedemo
+    { name: 'saucedemo-setup', testMatch: '**/saucedemo/auth.setup.ts' },
+    { name: 'saucedemo-chromium', testDir: './tests/saucedemo', use: { ...devices['Desktop Chrome'], baseURL: 'https://www.saucedemo.com', storageState: 'tests/saucedemo/.auth/user.json' }, dependencies: ['saucedemo-setup'] },
+    { name: 'saucedemo-firefox', testDir: './tests/saucedemo', use: { ...devices['Desktop Firefox'], baseURL: 'https://www.saucedemo.com' } },
+    { name: 'saucedemo-webkit', testDir: './tests/saucedemo', use: { ...devices['Desktop Safari'], baseURL: 'https://www.saucedemo.com' } },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+    // ai-plantz
+    { name: 'ai-plantz-setup', testMatch: '**/ai-plantz/auth.setup.ts' },
+    { name: 'ai-plantz-chromium', testDir: './tests/ai-plantz', use: { ...devices['Desktop Chrome'], baseURL: process.env.AI_PLANTZ_URL ?? 'http://localhost:8081', storageState: 'tests/ai-plantz/.auth/user.json' }, dependencies: ['ai-plantz-setup'] },
   ],
 
   /* Run your local dev server before starting the tests */
