@@ -1,27 +1,25 @@
 import { test, expect } from '@playwright/test';
 
-test('homepage loads and shows search input', async ({ page }) => {
-  await page.goto('/');
+test.describe('Home screen', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+  });
 
-  await expect(page.getByRole('heading', { name: 'LeafyAI' })).toBeVisible();
-  await expect(page.getByRole('searchbox')).toBeVisible();
-});
+  test('shows heading and search input', async ({ page }) => {
+    await expect(page.getByText('🌿 LeafyAI')).toBeVisible();
+    await expect(page.getByTestId('plant-search-input')).toBeVisible();
+    await expect(page.getByTestId('get-tips-button')).toBeVisible();
+    await expect(page.getByTestId('potd-card')).toBeVisible();
+  });
 
-test('can search for a plant', async ({ page }) => {
-  await page.goto('/');
+  test('can search for a plant and see results', async ({ page }) => {
+    await page.getByTestId('plant-search-input').fill('Monstera');
+    await page.getByTestId('get-tips-button').click();
+    await expect(page.getByTestId('plant-summary')).toBeVisible({ timeout: 15000 });
+  });
 
-  await page.getByRole('searchbox').fill('Monstera');
-  await page.getByRole('button', { name: 'Get Tips' }).click();
-
-  await expect(page.locator('[data-testid="summary"], p, .summary').first()).toBeVisible({ timeout: 15000 });
-});
-
-test('Random button searches a plant', async ({ page }) => {
-  await page.goto('/');
-
-  await page.getByRole('button', { name: 'Random' }).click();
-
-  const loading = page.getByRole('progressbar').or(page.getByText(/loading/i));
-  await expect(loading).toBeVisible({ timeout: 5000 });
-  await expect(loading).not.toBeVisible({ timeout: 15000 });
+  test('random button triggers a search', async ({ page }) => {
+    await page.getByTestId('random-plant-button').click();
+    await expect(page.getByTestId('plant-summary')).toBeVisible({ timeout: 15000 });
+  });
 });

@@ -45,7 +45,7 @@ export default defineConfig({
     { name: 'saucedemo-webkit', testDir: './tests/saucedemo', use: { ...devices['Desktop Safari'], baseURL: 'https://www.saucedemo.com' } },
 
     // ai-plantz
-    { name: 'ai-plantz-setup', testMatch: '**/ai-plantz/auth.setup.ts' },
+    { name: 'ai-plantz-setup', testMatch: '**/ai-plantz/auth.setup.ts', use: { baseURL: process.env.AI_PLANTZ_URL ?? 'http://localhost:8081' } },
     { name: 'ai-plantz-chromium', testDir: './tests/ai-plantz', use: { ...devices['Desktop Chrome'], baseURL: process.env.AI_PLANTZ_URL ?? 'http://localhost:8081', storageState: 'tests/ai-plantz/.auth/user.json' }, dependencies: ['ai-plantz-setup'] },
   ],
 

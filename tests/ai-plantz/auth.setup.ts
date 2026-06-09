@@ -4,13 +4,18 @@ import path from 'path';
 const authFile = path.join(__dirname, '.auth/user.json');
 
 setup('authenticate', async ({ page }) => {
-  await page.goto('/screens/auth');
+  const baseURL = process.env.AI_PLANTZ_URL ?? 'http://localhost:8081';
+  await page.goto(`${baseURL}/screens/auth`);
 
-  await page.getByLabel('Email').fill(process.env.AI_PLANTZ_EMAIL ?? '');
-  await page.getByLabel('Password').fill(process.env.AI_PLANTZ_PASSWORD ?? '');
-  await page.getByRole('button', { name: 'Log in' }).click();
+  await page.getByRole('textbox', { name: 'you@example.com' }).fill(process.env.AI_PLANTZ_EMAIL ?? '');
+  await page.getByRole('textbox', { name: 'Enter your password' }).fill(process.env.AI_PLANTZ_PASSWORD ?? '');
+  await page.getByText('Log in').nth(1).click();
 
-  await page.waitForURL('/');
+  await page.waitForURL(url => url.pathname === '/' || url.pathname === '/screens/username');
+
+  if (page.url().includes('/screens/username')) {
+    await page.waitForURL(`${baseURL}/`);
+  }
 
   await page.context().storageState({ path: authFile });
 });

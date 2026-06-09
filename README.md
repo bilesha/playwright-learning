@@ -1,6 +1,6 @@
 # Playwright Test Suite
 
-A comprehensive end-to-end and API test suite built with [Playwright](https://playwright.dev/) and TypeScript. Covers UI automation, API testing, accessibility, visual regression, component testing, and more.
+A multi-project end-to-end and API test suite built with [Playwright](https://playwright.dev/) and TypeScript. Covers UI automation, API testing, accessibility, visual regression, network interception, and more — organised into self-contained project groups, each with its own baseURL and auth state.
 
 ---
 
@@ -20,35 +20,45 @@ A comprehensive end-to-end and API test suite built with [Playwright](https://pl
 
 ```
 ├── tests/
-│   ├── auth.setup.ts           # Saves login session to auth.json before tests run
-│   ├── health.spec.ts          # Basic API health check
-│   ├── api.spec.ts             # CRUD API tests (GET, POST, PUT, DELETE)
-│   ├── api-advanced.spec.ts    # API chaining, custom contexts, schema validation
-│   ├── api/
-│   │   └── posts.spec.ts       # Single resource API tests
-│   └── ui/
-│       ├── saucedemo.spec.ts         # Login, inventory, checkout flows
-│       ├── saucedemo-advanced.spec.ts # test.step, data-driven, sorting tests
-│       ├── fixtures.spec.ts          # Custom fixture usage
-│       ├── network.spec.ts           # Network interception / mocking
-│       ├── polling.spec.ts           # expect.poll and expect.toPass
-│       ├── visual.spec.ts            # Screenshot / visual regression
-│       ├── mobile.spec.ts            # Mobile viewport tests (iPhone 13)
-│       ├── downloads.spec.ts         # File download handling
-│       ├── accessibility.spec.ts     # Axe-core accessibility scans
-│       ├── iframes.spec.ts           # iframe interaction
-│       └── navigation.spec.ts        # Page navigation
+│   ├── jsonplaceholder/
+│   │   ├── auth.setup.ts           # No-op setup (public API, no login)
+│   │   ├── health.spec.ts          # Basic API health check
+│   │   ├── api.spec.ts             # CRUD API tests (GET, POST, PUT, DELETE)
+│   │   ├── api-advanced.spec.ts    # API chaining, custom contexts, schema validation
+│   │   ├── posts.spec.ts           # Single resource API tests
+│   │   └── .auth/                  # Stores auth state (gitignored)
+│   ├── saucedemo/
+│   │   ├── auth.setup.ts           # Logs in and saves session
+│   │   ├── saucedemo.spec.ts       # Login, inventory, checkout flows
+│   │   ├── saucedemo-advanced.spec.ts  # test.step, data-driven, sorting tests
+│   │   ├── fixtures.spec.ts        # Custom fixture usage
+│   │   ├── network.spec.ts         # Network interception / mocking
+│   │   ├── polling.spec.ts         # expect.poll and expect.toPass
+│   │   ├── visual.spec.ts          # Screenshot / visual regression
+│   │   ├── mobile.spec.ts          # Mobile viewport tests (iPhone 13)
+│   │   ├── downloads.spec.ts       # File download handling
+│   │   ├── accessibility.spec.ts   # Axe-core accessibility scans
+│   │   ├── iframes.spec.ts         # iframe interaction
+│   │   ├── navigation.spec.ts      # Page navigation
+│   │   ├── utils/
+│   │   │   ├── LoginPage.ts        # Page Object — login
+│   │   │   ├── InventoryPage.ts    # Page Object — product inventory, sorting
+│   │   │   ├── CartPage.ts         # Page Object — shopping cart
+│   │   │   ├── CheckoutPage.ts     # Page Object — checkout flow
+│   │   │   └── fixtures.ts         # loggedInPage custom fixture
+│   │   └── .auth/                  # Stores auth state (gitignored)
+│   ├── ai-plantz/
+│   │   ├── auth.setup.ts           # Logs in via /screens/auth
+│   │   ├── search.spec.ts          # Plant search and homepage tests
+│   │   └── .auth/                  # Stores auth state (gitignored)
+│   └── examples/
+│       └── example.spec.ts         # Reference examples (not run automatically)
 ├── utils/
-│   ├── fixtures.ts             # Custom Playwright fixtures (loggedInPage)
-│   ├── LoginPage.ts            # Page Object — SauceDemo login
-│   ├── InventoryPage.ts        # Page Object — product inventory, sorting
-│   ├── CartPage.ts             # Page Object — shopping cart
-│   ├── CheckoutPage.ts         # Page Object — checkout flow
-│   └── SummaryReporter.ts      # Custom reporter — pass/fail summary
-├── playwright.config.ts        # Playwright configuration
+│   └── SummaryReporter.ts          # Custom reporter — pass/fail summary
+├── playwright.config.ts            # Playwright configuration
 └── .github/
     └── workflows/
-        └── playwright.yml      # CI pipeline (GitHub Actions)
+        └── playwright.yml          # CI pipeline (GitHub Actions)
 ```
 
 ---
@@ -72,28 +82,35 @@ npx playwright install --with-deps
 Create a `.env` file in the project root:
 
 ```env
+SAUCE_URL=https://www.saucedemo.com
 SAUCE_USERNAME=standard_user
 SAUCE_PASSWORD=secret_sauce
+
+AI_PLANTZ_URL=
+AI_PLANTZ_EMAIL=
+AI_PLANTZ_PASSWORD=
 ```
 
-These credentials are for [saucedemo.com](https://www.saucedemo.com), a public demo site built for test automation practice.
+`SAUCE_*` credentials are for [saucedemo.com](https://www.saucedemo.com), a public demo site built for test automation practice. `AI_PLANTZ_*` are only needed when running the `ai-plantz` project.
 
 ---
 
 ## Running Tests
 
 ```bash
-# Run all tests (all browsers)
+# Run all tests (all projects, all browsers)
 npx playwright test
 
+# Run a single project
+npx playwright test --project=jsonplaceholder-chromium
+npx playwright test --project=saucedemo-chromium
+npx playwright test --project=ai-plantz-chromium
+
 # Run a single file
-npx playwright test tests/health.spec.ts
+npx playwright test tests/jsonplaceholder/health.spec.ts
 
 # Run tests matching a name pattern
 npx playwright test --grep "checkout"
-
-# Run a single browser only
-npx playwright test --project=chromium
 
 # Run in headed mode (watch the browser)
 npx playwright test --headed
@@ -105,7 +122,7 @@ npx playwright test --headless
 npx playwright test --ui
 
 # Debug a specific test
-npx playwright test --debug tests/ui/saucedemo.spec.ts
+npx playwright test --debug tests/saucedemo/saucedemo.spec.ts
 
 # Open the HTML report from the last run
 npx playwright show-report
@@ -118,14 +135,17 @@ npx playwright codegen
 
 ## Key Concepts Demonstrated
 
+### Multi-Project Structure
+Each suite is self-contained with its own `testDir`, `baseURL`, and auth state. Adding a new app means adding a new project group in `playwright.config.ts` — existing suites are unaffected.
+
 ### Page Object Model (POM)
-Test logic is separated into reusable page classes in `utils/`. Tests read like plain English and page interactions are defined once, reused everywhere.
+Page classes live in `tests/saucedemo/utils/`, co-located with the suite that owns them. Tests read like plain English; page interactions are defined once and reused everywhere.
 
 ### Auth State
-`auth.setup.ts` logs in once and saves the browser session to `auth.json`. The Chromium project reuses this state so tests skip the login step entirely — faster and less flaky.
+Each suite has an `auth.setup.ts` that runs before the browser projects. It logs in once, saves the browser session to `<suite>/.auth/user.json`, and the dependent projects reuse that state — no repeated logins.
 
 ### Custom Fixtures
-`utils/fixtures.ts` extends Playwright's base `test` with a `loggedInPage` fixture that injects an already-authenticated page into any test that needs it.
+`tests/saucedemo/utils/fixtures.ts` extends Playwright's base `test` with a `loggedInPage` fixture that injects an already-authenticated page into any test that needs it.
 
 ### Network Interception
 `page.route()` intercepts HTTP requests and returns mocked responses. Used to test UI behaviour without depending on a real backend.
@@ -159,7 +179,7 @@ Credentials are stored as GitHub repository secrets (`SAUCE_USERNAME`, `SAUCE_PA
 
 | Setting | Value | Notes |
 |---------|-------|-------|
-| `baseURL` | `https://jsonplaceholder.typicode.com` | Used by API tests |
+| `baseURL` | Per-project | Each suite sets its own; no global baseURL |
 | `headless` | `false` locally, `true` in CI | Controlled via `process.env.CI` |
 | `retries` | 0 locally, 2 in CI | Reduces false failures in CI |
 | `trace` | `on-first-retry` | Trace files recorded on retry for debugging |
